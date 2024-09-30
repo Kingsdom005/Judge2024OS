@@ -1,0 +1,32 @@
+judgeConfig:
+  structure:
+    filename: 'xxxxxxxxxx-xxx-操作系统第一次作业'
+    l1_title: '操作系统第一次作业'
+    l2_titles:
+      - 1.实验内容
+      - 2.实验思路
+      - 3.实验源码
+      - 4.实验结果
+      - 5.实验总结与反思
+  maxDep: 3
+  limitations:
+    - min_len: 10
+      max_len: 999
+    - min_len: 10
+    - min_len: 10
+    - min_len: 10
+    - min_len: 10
+  scores:
+    - score: 1
+      desc: 实验内容
+    - score: 1
+      desc: 实验思路
+    - score: 4
+      desc: 实验源码
+    - score: 2
+      desc: 实验结果
+    - score: 1
+      desc: 实验总结与反思
+    - score: 1
+      desc: 报告结构
+  total_score: 10
