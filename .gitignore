@@ -10,3 +10,11 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 CMakeUserPresets.json
+
+*_wasted.py
+data/first
+data/second
+excel/
+reports/first
+reports/second
+pytest/

@@ -9,14 +9,14 @@ import sys
 
 
 # 读取markdown文档
-directory = './data/first'
+directory = './data/second/'
 md_files = [file for file in os.listdir(directory) if file.endswith('.md')]
-md_first_files = [item for item in md_files if '第一次' in item]
+md_first_files = [item for item in md_files if '第二次' in item]
 excel_data = []
 default_read_md_file = ""
 # print(md_first_files)
 
-def get_structure_info(file_name, prefix="./data/first/"):
+def get_structure_info(file_name, prefix="./data/second/"):
     res = {
         "filename": '',
         "l1_title": '',
@@ -78,7 +78,7 @@ def format_number(num):
     else:
         return f"{num:.2f}"
 
-def generate_excel(data, excel_filename="OS第一次作业汇总.xlsx"):
+def generate_excel(data, excel_filename="OS第二次作业汇总.xlsx"):
     # 转换为 pandas DataFrame
     df = pd.DataFrame(data)
 
@@ -138,7 +138,7 @@ def generate_excel(data, excel_filename="OS第一次作业汇总.xlsx"):
 if __name__ == '__main__':
 
     if len(md_first_files) == 0:
-        print("没有检测到第一次作业相关文档！\n请检查文件命名是否为：学号-姓名-操作系统第一次作业.md")
+        print("没有检测到第二次作业相关文档！\n请检查文件命名是否为：学号-姓名-操作系统第二次作业.md")
         sys.exit()
 
     for first_name in md_first_files:
@@ -158,7 +158,7 @@ if __name__ == '__main__':
 
         # read config yml file
         print("读取配置文件中……")
-        with open('config.yml', 'r', encoding="utf8") as file:
+        with open('config2.yml', 'r', encoding="utf8") as file:
             config = yaml.safe_load(file)
 
         print(config)
@@ -170,7 +170,7 @@ if __name__ == '__main__':
             "structure_l2": [False for _ in range(5)]
         }
 
-        pattern = r'^\d{10}-\w+-操作系统第一次作业\.md$'
+        pattern = r'^\d{10}-\w+-操作系统第二次作业\.md$'
         if re.match(pattern, structure["filename"]):
             check_structure["filename"] = True
 
@@ -243,21 +243,50 @@ if __name__ == '__main__':
                 print(f"所属章节：{data[index][0]}")
                 print("提取的文本:")
                 print(content_between)
-                if data[index][0] == "实验源码":
-                    targets = scores[index]['check_points']#['hello_world', 'heel', 'ddd'] # targets应该写入config.yml
-                    pattern = r'```(.*?)```'
+                if data[index][0] == "实验结果":
+                    # 需要进一步拆分实验结果
+                    tmp_res_score = 0
+                    per_score = float(scores[index]["score"]) / 5
+                    # 使用正则表达式提取“测试结果”和“原理分析”的内容
+                    pattern = r"测试结果：\s*(.*?)\n.*?原理分析：\s*(.*?)\n" # 可能匹配不到最后一个
                     matches = re.findall(pattern, content_between, re.DOTALL)
+                    print("matches:", matches)
 
-                    res = find_targets(matches[0].strip(), targets)
-                    print("关键词检测结果：", res)
+                    # 输出结果
+                    for i, (test_result, analysis) in enumerate(matches, start=1):
+                        res = re.findall(r'\d+', test_result)[0]
+                        print(f"测试内容{i}：{res}")
+                        if i == 1:
+                            if int(res) < 200000 and int(res) > 1000: 
+                                tmp_res_score += per_score
+                                print(f"测试结果{i}：通过")
+                            else:
+                                print(f"测试结果{i}：通过")
+                        elif i == 2 or i == 4 :
+                            if int(res) == 200000:
+                                tmp_res_score += per_score
+                                print(f"测试结果{i}：通过")
+                            else:
+                                print(f"测试结果{i}：不通过")
+                        elif i == 3:
+                            if int(res) <= 200000 and int(res) >= 190000:
+                                tmp_res_score += per_score
+                                print(f"测试结果{i}：通过")
+                            else:
+                                print(f"测试结果{i}：不通过")
+                                
+                    final_test_res = content_between.split("生产者消费者问题")[-1].strip().split("\n")[0].split("测试结果：")[-1].strip()
+                    final_analysis_res = content_between.split("生产者消费者问题")[-1].strip().split("\n")[-1].split("原理分析：")[-1].strip()
+                    print(f"测试结内容5：{final_test_res}")
+                    # print(final_test_res, "\n" ,final_analysis_res)
+                    if len(final_test_res) > 10 and len(final_analysis_res) > 10:
+                        tmp_res_score += per_score
+                        print(f"测试结果5：通过")
+                    else:
+                        print(f"测试结果5：不通过")
 
-                    per_score = float(scores[index]["score"]) / len(res)
-                    tmp_score = 0
-                    for item in res:
-                        if item != -1:
-                            tmp_score += per_score
-                    total_score += tmp_score
-                    data[index][2] = tmp_score
+                    total_score += tmp_res_score
+                    data[index][2] = tmp_res_score
 
                 elif len(content_between) >= float(limitations[index]["min_len"]):
                     total_score += float(scores[index]["score"])
@@ -360,7 +389,7 @@ if __name__ == '__main__':
         }
 
         # 保存html文件
-        with open(f'./reports/first/{file_info["id"]}-{file_info["name"]}-report.html', 'w', encoding='utf-8') as file:
+        with open(f'./reports/second/{file_info["id"]}-{file_info["name"]}-report.html', 'w', encoding='utf-8') as file:
             file.write(html_content)
 
         print("HTML报告已生成！")
@@ -368,10 +397,4 @@ if __name__ == '__main__':
         excel_data.append({'id': file_info["id"], 'name': file_info["name"], 'score': total_score})
 
     # generate excel
-    #         
-    # excel_data = [
-    #     {'id': '2024140224', 'name': '李华', 'score': 10},
-    #     {'id': '2024140924', 'name': '李华2', 'score': 8},
-    #     {'id': '2024140260', 'name': '2李华', 'score': 5}
-    # ]
     generate_excel(excel_data)
