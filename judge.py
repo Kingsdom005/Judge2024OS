@@ -7,6 +7,22 @@ import re
 import os
 import sys
 
+print("目录初始化中……")
+
+def generate_folder(folder_path):
+    # 判断文件夹是否存在
+    if not os.path.exists(folder_path):
+        # 如果不存在，则创建文件夹
+        os.makedirs(folder_path)
+
+generate_folder("./data")
+generate_folder("./data/first")
+generate_folder("./excel")
+generate_folder("./reports")
+generate_folder("./reports/first")
+generate_folder("./pytest")
+
+print("目录初始化完成！")
 
 # 读取markdown文档
 directory = './data/first'
