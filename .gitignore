@@ -12,9 +12,9 @@ _deps
 CMakeUserPresets.json
 
 *_wasted.py
-data/first
-data/second
-excel/
-reports/first
-reports/second
-pytest/
+data/first/*
+data/second/*
+excel/*
+reports/first/*
+reports/second/*
+pytest/*
