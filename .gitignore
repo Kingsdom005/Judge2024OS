@@ -18,3 +18,6 @@ excel/*
 reports/first/*
 reports/second/*
 pytest/*
+code/*
+run_code/*.txt
+.vscode/*
