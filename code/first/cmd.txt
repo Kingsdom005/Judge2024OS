@@ -1,0 +1,32 @@
+create P1 2 
+create P2 2
+create P3 2
+create init 0
+
+activate 1
+activate 2
+activate 3
+
+request 1 A 
+request 2 B
+request 3 C
+
+request 1 B
+request 2 C
+request 3 A
+
+timeout 1
+release 1 A
+timeout 2
+release 2 B
+timeout 3   
+release 3 C
+
+request_io 1
+io_complete 1
+
+destroy 2
+destroy 3
+
+list_p
+list_r
